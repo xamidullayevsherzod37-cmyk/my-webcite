@@ -1,0 +1,42 @@
+# Global build settings
+[build]
+  command = "npm run build" # Command to run your build process
+  publish = "dist"          # Directory containing your built site files
+  functions = "netlify/functions" # Directory for Netlify Edge Functions or Serverless Functions
+
+# Environment variables for the build process
+[build.environment]
+  NODE_VERSION = "18" # Specify Node.js version
+
+# Context-specific settings (e.g., for production, deploy previews, branch deploys)
+[context.production]
+  command = "npm run build:production" # Override build command for production
+  [context.production.environment]
+    NODE_ENV = "production"
+
+[context.deploy-preview]
+  command = "npm run build:preview" # Override build command for deploy previews
+
+# Redirects
+[[redirects]]
+  from = "/old-path"
+  to = "/new-path"
+  status = 301 # Permanent redirect
+
+[[redirects]]
+  from = "/blog/*"
+  to = "/articles/:splat" # Wildcard redirect
+  status = 200
+
+# Headers
+[[headers]]
+  for = "/*" # Apply to all paths
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+
+# Edge Functions declarations (if not declared inline)
+[[edge_functions]]
+  function = "my-edge-function"
+  path = "/api/*"
+  excludedPath = "/api/admin/*" # Exclude specific paths
